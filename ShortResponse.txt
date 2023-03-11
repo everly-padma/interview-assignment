@@ -1,22 +1,12 @@
 Short Resposes:
 
 1. Repetitive or frequently accessed critical task
-2. Verify business rules and requirements to make sure everything is fulfilled. After that …
-3. Testing scenarios:
-	3.1 scenario 1
-		a. login to app with url = 
-		b. Choose 3 tests and add to cart 
-		c. go to cart
-		d. Verify that no volume discount is applied
-	3.2 scenario 2
-		a. login to app with url = 
-		b. Choose 6 tests and add to cart 
-		c. go to cart
-		d. Verify that atleast volume discount is applied  such that the price of the discount = price of one item in the cart
-
-4. Communicate the extent of impact of the bug to the Product Owner in terms of: 
-	a. financial loss, if any (eg: more discount being applied)
-	b. User experience (eg: no discount for more than 5)
-	c. User profiles that will be impacted 
-	d. Scenarios that will be impacted 
+2. Verify business rules and requirements to make sure everything is fulfilled. After that have a quick discussion with developer and share the screen shot. If the developer agrees then raise a bug in JIRA  and share it to PO
+3. Create test scenarios in Agile portal and share it.
+4. Understand the severity of the issue,. Communicate the extent of impact of the bug to the Product Owner in terms of: 
+	a. Functionality missing 
+        b. financial loss, if any (eg: more discount being applied)
+	c. User experience (eg: no discount for more than 5)
+	d. User profiles that will be impacted 
+	e. Scenarios that will be impacted 
      Also the decision has to be of the product owner, but based on my opinion if there is any impact based on financial or user experience then it should be delayed if there are no feature flags available.
