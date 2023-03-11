@@ -1,0 +1,99 @@
+FrontEnd UI Validations:
+
+
+Pre-requisite:  For all the scenarios mentioned below I will use selenium as that is a skillset I have, In Selenium we load the chromeless browser to test the application.And each field is accessed by their xpath(uniqueid/unique layout)
+
+I am only writing the snippet here for the tests without the xpath
+
+
+Scenario 1: (important scenario - ; segregation of Duty (SOD); only admin user should have access to manage discounts)
+
+Open the login page
+Use admin user/password to login
+  Validate 
+	- “Manage Discount” endpoint is managed by role based access control; Feature is available only to admin user(s) 
+	- “Manage Discounts” link option not available to not admin users
+ 
+Scenario 2:
+
+Open the login page
+Use admin user/password to login
+  Open “New Discount” 
+  Validate specifications and date formats for 
+	- “Name” for discount
+	- “Active From Date”
+	- “Active Till Date”
+	- choose “Volume discount” as discount type is available
+	- provide the number input for the MINIMUM count for volume discount 
+	- the % discount amount based on the base amount of each item Or, some fixed amount
+	- “Save” is ENABLED
+
+
+Scenario 3: invalid user credentials
+
+2. Perform validations to ensure the expected items, quantity and discount are reflected in the shopping cart.
+
+Scenario 1:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 6
+  Add to cart
+Validate:
+	- there are quantity = 6 in the cart
+	- discount applied for having at least 5 items 
+	- discount applied = price of one item 
+	- total price = price of 5 items 
+	
+Scenario 2:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 4
+  Add to cart
+Validate:
+	- there are quantity = 4 in the cart
+	- discount NOT applied for NOT having at least 5 items 
+	- total price = price of 4 items 
+  
+
+3. Submit payment and complete the purchase. 
+
+Scenario 1:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 6
+  Add to cart
+  Go to cart
+  Continue to Payment
+  Enter payment information and Submit
+Validate - Payment gateway return success, then complete the order	
+
+Scenario 2:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 6
+  Add to cart
+  Go to cart
+  Continue to Payment
+  Enter payment information and Submit
+Validate - Payment gateway return error, then order is not confirmed. 
+
+Scenario 3
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 6
+  Add to cart
+  Go to cart
+  Continue to Payment
+  Enter payment information and Submit
+  Payment gateway return success, then order is confirmed
+Validate - payment gateway executed the exact transaction amount as was debited  by the application.
