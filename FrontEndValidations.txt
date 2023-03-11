@@ -5,6 +5,7 @@ Pre-requisite:  For all the scenarios mentioned below I will use selenium as tha
 
 I am only writing the snippet here for the tests without the xpath
 
+1. Cover the most critical and risk-prone functionality related to this feature.
 
 Scenario 1: (important scenario - ; segregation of Duty (SOD); only admin user should have access to manage discounts)
 
@@ -14,22 +15,15 @@ Use admin user/password to login
 	- “Manage Discount” endpoint is managed by role based access control; Feature is available only to admin user(s) 
 	- “Manage Discounts” link option not available to not admin users
  
-Scenario 2:
 
+Scenario 2:  invalid promo code
 Open the login page
-Use admin user/password to login
-  Open “New Discount” 
-  Validate specifications and date formats for 
-	- “Name” for discount
-	- “Active From Date”
-	- “Active Till Date”
-	- choose “Volume discount” as discount type is available
-	- provide the number input for the MINIMUM count for volume discount 
-	- the % discount amount based on the base amount of each item Or, some fixed amount
-	- “Save” is ENABLED
-
-
-Scenario 3: invalid user credentials
+Use regular user/password to login
+Add items to the cart
+Go to checkout
+Enter the invalid promo code
+  Validate 
+	- The promo code is rejected by the application
 
 2. Perform validations to ensure the expected items, quantity and discount are reflected in the shopping cart.
 
@@ -57,7 +51,35 @@ Validate:
 	- there are quantity = 4 in the cart
 	- discount NOT applied for NOT having at least 5 items 
 	- total price = price of 4 items 
-  
+ 
+Scenario 3:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 5
+  Add to cart
+Validate:
+	- there are quantity = 5 in the cart
+	- discount applied for having at least 5 items 
+	- discount applied = price of one item 
+	- total price = price of 4 items 
+
+Scenario 4:
+
+Open the login page
+Use enduser/password to login
+  Search Items 
+  Select quantity 6
+  Add to cart
+  Go to checkout
+  Enter the valid promo code
+Validate:
+	- there are quantity = 5 in the cart
+	- if promo code discount > volume discount then promo code discount is applied. Else volume discount is applied 
+	- discount applied = based on the above rule
+	- total price = total price of 5 items - discount amount
+		
 
 3. Submit payment and complete the purchase. 
 
@@ -82,7 +104,7 @@ Use enduser/password to login
   Add to cart
   Go to cart
   Continue to Payment
-  Enter payment information and Submit
+  Enter invalid payment information and Submit
 Validate - Payment gateway return error, then order is not confirmed. 
 
 Scenario 3
