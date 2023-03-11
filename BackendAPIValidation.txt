@@ -1,0 +1,110 @@
+Backend API Validations:
+
+Scenario 1:
+
+
+// get the total items from the cart
+// if total >= 5, 
+//	get the discount amount
+//	for each item
+//		if price = discount then
+//			return true
+//	return false			
+TestCartDiscount{
+
+	@Test
+	volumeDiscount(){
+
+		valid = false
+
+		cart = getItemsinCart()
+
+		if(cart.items.length >= 5 ) {
+			discount = cart.discount
+
+			for(item : cart.items){
+				if(item.price == discount) 
+					valid = true
+			}
+		}
+
+		assertTrue( valid )
+	}
+	
+
+    getItemsinCart(){
+
+	fetch (
+		‘https://everlywell.com/v9/shoppingCart',
+		Method: ‘GET’, 
+		Headers: “{
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+					Authorization: 'Bearer “+ bearerToken +”’
+				}” 
+	).then(function(response) { 
+		
+		if(response.ok) {
+    			return(response.getjson())
+  		} else {
+    			response.text().then(msg = > console.log(msg));
+
+  		}
+		
+	})catch(function(error) {
+  		console.log(‘unexpected error while getting  items from cart : ' + error.message);
+	});		
+
+    }
+
+}
+
+
+
+Scenario 2:
+ //in this scenario, malicious user will be unaware of 
+// 	1. the bearer token 
+//	2. Discount name
+//	3. Amount semantics
+// So the user will attempt various combination to try to make it work. I will assume only 1 such failed scenario
+
+
+  @Test
+  maliciousAttempt(){
+
+      validResponseCode = -1
+      cartDiscount = 0
+
+      fetch (
+        ‘https://everlywell.com/v9/promoCode',
+        Method: ‘POST’, 
+        Headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer wdfvwefwefwvwefvw’
+        } ,
+        Body: {
+
+          discountAmount: 100
+
+        }
+      ).then(function(response) { 
+        if(response.headers.get("status”)==401)
+
+          validResponseCode=401
+
+          cartDiscount = getItemsinCart().discount
+
+          } else {
+              response.text().then(msg = > console.log(msg));
+
+          }
+
+      })catch(function(error) {
+          console.log(‘unexpected error while trying for  malicious attempt : ' + error.message);
+      });		
+
+      assertEquals(validResponseCode==401 && cartDiscount==15) 
+
+    }
+
