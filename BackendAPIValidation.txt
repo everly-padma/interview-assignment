@@ -1,36 +1,7 @@
 Backend API Validations:
 
-Scenario 1:
 
-
-// get the total items from the cart
-// if total >= 5, 
-//	get the discount amount
-//	for each item
-//		if price = discount then
-//			return true
-//	return false			
-TestCartDiscount{
-
-	@Test
-	volumeDiscount(){
-
-		valid = false
-
-		cart = getItemsinCart()
-
-		if(cart.items.length >= 5 ) {
-			discount = cart.discount
-
-			for(item : cart.items){
-				if(item.price == discount) 
-					valid = true
-			}
-		}
-
-		assertTrue( valid )
-	}
-	
+//create a global function to return the items in the cart
 
     getItemsinCart(){
 
@@ -42,7 +13,7 @@ TestCartDiscount{
 					'Content-Type': 'application/json',
 					Authorization: 'Bearer “+ bearerToken +”’
 				}” 
-	).then(function(response) { 
+		).then(function(response) { 
 		
 		if(response.ok) {
     			return(response.getjson())
@@ -57,7 +28,31 @@ TestCartDiscount{
 
     }
 
-}
+
+
+Scenario 1:
+
+// get total price from the cart
+// get the discount amount
+// assert subtotal = total - discount
+
+	@Test
+	testValidSubtotal(){
+
+		cart = getItemsinCart()
+
+		discount = cart.discount
+		total = 0
+
+		for(item : cart.items){
+			total += item.price
+		}
+
+		subtotal = cart.subTotal
+
+		assertTrue( subtotal == total - discount )
+	}
+	
 
 
 
@@ -70,41 +65,33 @@ Scenario 2:
 
 
   @Test
-  maliciousAttempt(){
+    maliciousAttempt(){
 
-      validResponseCode = -1
-      cartDiscount = 0
+	responseCode = -1
 
-      fetch (
-        ‘https://everlywell.com/v9/promoCode',
-        Method: ‘POST’, 
-        Headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer wdfvwefwefwvwefvw’
-        } ,
-        Body: {
+	fetch (
+		‘https://everlywell.com/v9/promoCode',
+		Method: ‘POST’, 
+		Headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json',
+				Authorization: 'Bearer wdfvwefwefwvwefvw’
+		} ,
+		Body: {
+			
+			discountAmount: 100
+		
+		}
+	).then(function(response) { 
 
-          discountAmount: 100
+		responseCode = response.headers.get("status”)
+						
+	})catch(function(error) {
+  		console.log(‘unexpected error while trying for  malicious attempt : ' + error.message);
+	});		
 
-        }
-      ).then(function(response) { 
-        if(response.headers.get("status”)==401)
+	items = getItemsinCart().items
 
-          validResponseCode=401
-
-          cartDiscount = getItemsinCart().discount
-
-          } else {
-              response.text().then(msg = > console.log(msg));
-
-          }
-
-      })catch(function(error) {
-          console.log(‘unexpected error while trying for  malicious attempt : ' + error.message);
-      });		
-
-      assertEquals(validResponseCode==401 && cartDiscount==15) 
+	assertTrue(responseCode <> 200 && items[0].name == "FIT Test" && items[0].quantity == 1 && items[0].price == 40 && items[1].name == “Allergy Test" && items[1].quantity == 1 && items[1].price == 60)  
 
     }
-
